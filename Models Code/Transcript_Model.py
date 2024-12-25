@@ -1,183 +1,168 @@
-import numpy as np
+# Importing required libraries
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
-import warnings
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.preprocessing import StandardScaler
 
-# Suppress specific warnings from NumPy
-warnings.filterwarnings("ignore", category=RuntimeWarning, module="numpy")
+# Fixing the random seed for reproducibility
+random_seed = 42
+np.random.seed(random_seed)
 
-# Load the dataset
-file_path = 'drive/MyDrive/ML data/practice/Transcript_Feature.csv'  # Update with your file path
-data = pd.read_csv(file_path)
+# Load your dataset
+data = pd.read_csv('Transcript_Feature_New.csv')
 
-# Preprocess Data
-feature_columns = data.columns.drop(['PHQ8', 'Case'])
-X = data[feature_columns].values
-y = data['PHQ8'].values
+# Shuffle the data
+data = data.sample(frac=1, random_state=random_seed).reset_index(drop=True)
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=24)
+# Preparing the data
+X = data.drop(['Case', 'PHQ8'], axis=1)
+y = data['PHQ8']
 
-# Standardize the features
+# Standardizing features for models that require scaling
 scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+X_scaled = scaler.fit_transform(X)
 
-# Custom Random Forest
-class CustomDecisionTree:
-    def __init__(self, max_depth=5):
-        self.max_depth = max_depth
-        self.tree = None
+# Splitting the data
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=random_seed)
 
-    def fit(self, X, y):
-        self.tree = self._build_tree(X, y, depth=0)
+# Initialize a dictionary to store results
+results = {}
 
-    def _build_tree(self, X, y, depth):
-        # Stopping criteria
-        if len(set(y)) == 1 or depth >= self.max_depth:
-            return np.mean(y)
+# Logistic Regression
+logistic_model = LogisticRegression(random_state=random_seed)
+logistic_model.fit(X_train, y_train)
+results['Logistic Regression'] = accuracy_score(y_test, logistic_model.predict(X_test))
 
-        # Find the best split
-        best_feature, best_value, best_split = None, None, None
-        min_error = float('inf')
-        for feature in range(X.shape[1]):
-            for value in set(X[:, feature]):
-                left = y[X[:, feature] <= value]
-                right = y[X[:, feature] > value]
-                error = len(left) * np.var(left) + len(right) * np.var(right)
-                if error < min_error:
-                    min_error = error
-                    best_feature, best_value, best_split = feature, value, (left, right)
+# Decision Trees
+decision_tree_model = DecisionTreeClassifier(random_state=random_seed)
+decision_tree_model.fit(X_train, y_train)
+results['Decision Trees'] = accuracy_score(y_test, decision_tree_model.predict(X_test))
 
-        # Create subtree
-        if best_split:
-            left_tree = self._build_tree(X[X[:, best_feature] <= best_value], best_split[0], depth + 1)
-            right_tree = self._build_tree(X[X[:, best_feature] > best_value], best_split[1], depth + 1)
-            return (best_feature, best_value, left_tree, right_tree)
-        return np.mean(y)
+# Random Forest
+random_forest_model = RandomForestClassifier(random_state=random_seed, n_estimators=100)
+random_forest_model.fit(X_train, y_train)
+results['Random Forest'] = accuracy_score(y_test, random_forest_model.predict(X_test))
 
-    def predict(self, X):
-        def traverse_tree(x, tree):
-            if not isinstance(tree, tuple):
-                return tree
-            feature, value, left, right = tree
-            return traverse_tree(x, left if x[feature] <= value else right)
+# Gradient Boosting
+gradient_boosting_model = GradientBoostingClassifier(random_state=random_seed)
+gradient_boosting_model.fit(X_train, y_train)
+results['Gradient Boosting'] = accuracy_score(y_test, gradient_boosting_model.predict(X_test))
 
-        return np.array([traverse_tree(x, self.tree) for x in X])
+# Support Vector Machines
+svm_model = SVC(kernel='linear', probability=True, random_state=random_seed)
+svm_model.fit(X_train, y_train)
+results['Support Vector Machines'] = accuracy_score(y_test, svm_model.predict(X_test))
 
-class CustomRandomForest:
-    def __init__(self, n_trees=10, max_depth=5):
-        self.n_trees = n_trees
-        self.max_depth = max_depth
-        self.trees = []
-        self.feature_importances_ = None
+# K-Nearest Neighbors
+knn_model = KNeighborsClassifier(n_neighbors=5)
+knn_model.fit(X_train, y_train)
+results['K-Nearest Neighbors'] = accuracy_score(y_test, knn_model.predict(X_test))
 
-    def fit(self, X, y):
-        self.feature_importances_ = np.zeros(X.shape[1])
-        for _ in range(self.n_trees):
-            sample_indices = np.random.choice(len(X), len(X))
-            sample_X, sample_y = X[sample_indices], y[sample_indices]
-            tree = CustomDecisionTree(max_depth=self.max_depth)
-            tree.fit(sample_X, sample_y)
-            self.trees.append(tree)
-            # Update feature importance (count of splits on each feature)
-            self._update_feature_importance(tree, sample_X)
+# Naive Bayes
+naive_bayes_model = GaussianNB()
+naive_bayes_model.fit(X_train, y_train)
+results['Naive Bayes'] = accuracy_score(y_test, naive_bayes_model.predict(X_test))
 
-    def _update_feature_importance(self, tree, X):
-        def traverse_and_collect(tree):
-            if not isinstance(tree, tuple):  # Leaf node
-                return
-            feature, _, left, right = tree
-            self.feature_importances_[feature] += 1
-            traverse_and_collect(left)
-            traverse_and_collect(right)
+# Linear Discriminant Analysis
+lda_model = LinearDiscriminantAnalysis()
+lda_model.fit(X_train, y_train)
+results['Linear Discriminant Analysis'] = accuracy_score(y_test, lda_model.predict(X_test))
 
-        traverse_and_collect(tree.tree)
+# Display results
+for model, accuracy in results.items():
+    print(f"{model}: {accuracy:.4f}")
 
-    def predict(self, X):
-        all_predictions = []
-        for tree in self.trees:
-            tree_predictions = tree.predict(X)
-            if len(tree_predictions) == 0:  # Handle empty predictions
-                continue
-            all_predictions.append(tree_predictions)
-        if len(all_predictions) == 0:  # Handle case where no valid predictions are made
-            raise ValueError("No valid predictions made by the forest.")
-        return np.round(np.mean(all_predictions, axis=0))
+# Plotting Data & Result
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, precision_recall_curve, auc, confusion_matrix, ConfusionMatrixDisplay
+import seaborn as sns
 
-    def get_feature_importance(self):
-        # Normalize feature importance
-        if self.feature_importances_ is not None:
-            total_splits = np.sum(self.feature_importances_)
-            return self.feature_importances_ / total_splits
-        return None
+# New Section: Visualization
 
+# Binary PHQ8 Distribution
+plt.figure(figsize=(8, 6))
+sns.countplot(x=y)
+plt.title('Binary PHQ8 Distribution')
+plt.xlabel('PHQ8')
+plt.ylabel('Count')
+plt.show()
 
+# Random Forest Feature Importance
+plt.figure(figsize=(10, 8))
+importance = random_forest_model.feature_importances_
+features = X.columns
+sns.barplot(x=importance, y=features)
+plt.title('Random Forest Feature Importance')
+plt.xlabel('Importance')
+plt.ylabel('Features')
+plt.show()
 
-# Custom SVM (Linear Kernel)
-class CustomSVM:
-    def __init__(self, lr=0.001, epochs=1000, C=1):
-        self.lr = lr  # Learning rate
-        self.epochs = epochs  # Number of iterations
-        self.C = C  # Regularization parameter
+# Random Forest Tree Structure
+from sklearn.tree import plot_tree
+plt.figure(figsize=(20, 10))
+plot_tree(random_forest_model.estimators_[0], filled=True, feature_names=X.columns, class_names=['0', '1'], fontsize=10)
+plt.title('Random Forest Tree Structure')
+plt.show()
 
-    def fit(self, X, y):
-        # Transform labels to -1 and 1
-        y = np.where(y <= 0, -1, 1)
-        self.weights = np.zeros(X.shape[1])
-        self.bias = 0
+# Naive Bayes Feature Contribution
+plt.figure(figsize=(10, 8))
+mean_diff = naive_bayes_model.theta_[1] - naive_bayes_model.theta_[0]
+sns.barplot(x=mean_diff, y=features)
+plt.title('Naive Bayes Feature Contribution')
+plt.xlabel('Mean Difference (Class 1 - Class 0)')
+plt.ylabel('Features')
+plt.show()
 
-        for _ in range(self.epochs):
-            for i in range(len(y)):
-                # Compute SVM condition
-                condition = y[i] * (np.dot(X[i], self.weights) - self.bias) >= 1
-                if condition:
-                    # Correct classification, only apply regularization
-                    self.weights -= self.lr * (2 * self.C * self.weights)
-                else:
-                    # Misclassification, update weights and bias
-                    self.weights -= self.lr * (2 * self.C * self.weights - np.dot(X[i], y[i]))
-                    self.bias -= self.lr * y[i]
+# Confusion Matrices
+for model_name, model in [('SVM', svm_model),
+                          ('Random Forest', random_forest_model),
+                          ('Naive Bayes', naive_bayes_model)]:
+    cm = confusion_matrix(y_test, model.predict(X_test))
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['0', '1'])
+    disp.plot(cmap='viridis')
+    plt.title(f'{model_name} Confusion Matrix')
+    plt.show()
 
-    def predict(self, X):
-        # Compute predictions
-        predictions = np.dot(X, self.weights) - self.bias
-        # Map predictions back to 0 and 1
-        return np.where(predictions >= 0, 1, 0)
+# ROC Curve
+plt.figure(figsize=(10, 8))
+for model_name, model in [('SVM', svm_model),
+                          ('Random Forest', random_forest_model),
+                          ('Naive Bayes', naive_bayes_model)]:
+    if hasattr(model, "predict_proba"):
+        y_proba = model.predict_proba(X_test)[:, 1]
+    else:
+        y_proba = model.decision_function(X_test)  # For SVM
+    fpr, tpr, _ = roc_curve(y_test, y_proba)
+    roc_auc = auc(fpr, tpr)
+    plt.plot(fpr, tpr, label=f'{model_name} (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.title('ROC Curve')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.legend(loc='lower right')
+plt.show()
 
-
-class CustomNaiveBayes:
-    def __init__(self):
-        self.class_prior = {}
-        self.feature_stats = {}
-
-    def fit(self, X, y):
-        self.classes = np.unique(y)
-        for c in self.classes:
-            X_c = X[y == c]
-            self.class_prior[c] = len(X_c) / len(y)
-            self.feature_stats[c] = {
-                "mean": np.mean(X_c, axis=0),
-                "var": np.var(X_c, axis=0) + 1e-6  # Add small value to prevent division by zero
-            }
-
-    def _calculate_likelihood(self, x, mean, var):
-        # Gaussian likelihood
-        numerator = np.exp(-((x - mean) ** 2) / (2 * var))
-        denominator = np.sqrt(2 * np.pi * var)
-        return numerator / denominator
-
-    def _calculate_posterior(self, x):
-        posteriors = {}
-        for c in self.classes:
-            prior = np.log(self.class_prior[c])
-            likelihoods = np.sum(
-                np.log(self._calculate_likelihood(x, self.feature_stats[c]["mean"], self.feature_stats[c]["var"]))
-            )
-            posteriors[c] = prior + likelihoods
-        return max(posteriors, key=posteriors.get)
-
-    def predict(self, X):
-        return np.array([self._calculate_posterior(x) for x in X])
+# Precision-Recall Curve
+plt.figure(figsize=(10, 8))
+for model_name, model in [('SVM', svm_model),
+                          ('Random Forest', random_forest_model),
+                          ('Naive Bayes', naive_bayes_model)]:
+    if hasattr(model, "predict_proba"):
+        y_proba = model.predict_proba(X_test)[:, 1]
+    else:
+        y_proba = model.decision_function(X_test)  # For SVM
+    precision, recall, _ = precision_recall_curve(y_test, y_proba)
+    plt.plot(recall, precision, label=model_name)
+plt.title('Precision-Recall Curve')
+plt.xlabel('Recall')
+plt.ylabel('Precision')
+plt.legend(loc='upper right')
+plt.show()
