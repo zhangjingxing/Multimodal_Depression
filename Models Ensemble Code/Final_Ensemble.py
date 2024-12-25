@@ -92,7 +92,7 @@ def majority_vote(predictions):
 # Step 2: Load and Preprocess New Transcript Data
 
 data = {
-    'Case': ['Angie', 'Jeremy', 'Jonathan', 'Richard', 'VIncent', 'Winnie'],
+    'Case': ['Member1', 'Member2', 'Member3', 'Member4', 'Member5', 'Member6'],
     'Sentiment Consistency': [4, 3, 5, 4, 3, 4],
     'Emotional Variability': [3, 3, 4, 4, 3, 3],
     'Self-Reflection and Insight': [4, 3, 5, 4, 4, 4],
