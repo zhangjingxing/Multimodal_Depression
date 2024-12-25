@@ -11,6 +11,14 @@ The original/raw datasets are NOT uploaded to this repository to comply with dat
 We have excluded certain portions of the dataset even after being processed, including:
 - The ground truth column of both datasets, since it contains the PHQ8 result of the participants (the questionnaire which indicates whether participants have depression or not)
 
+## Github Repository Folders Guidance
+This repository contains several folders:
+- Dataset: contains the preprocessed transcript and audio dataset (numerical value, without ground truth column)
+- Model Code: audio model, transcript model, emotions model, face model.
+- Models Ensemble code: trial and error, as well as the final models' ensemble code. The trial-and-error version is to find out which ensemble method has the best performance, meanwhile, the final version is the version we finally used.
+
+More details on each model we implemented and also the ensemble model can be found in the bottom part of this instruction page. 
+
 ## Audio Preprocessing
 The raw audio recordings include both the interviewer’s and the participant’s voices. To ensure the data focuses solely on the participant, we preprocess the audio by cropping out segments where the interviewer speaks. Once the participant's speech is isolated, we extract acoustic features using techniques such as Mel-Frequency Cepstral Coefficients (MFCC). For more information on how to extract Mel-Frequency Cepstral Coefficients (MFCCs), refer to the [Librosa MFCC documentation](https://librosa.org/doc/latest/generated/librosa.feature.mfcc.html?utm_source=chatgpt.com). MFCC effectively captures the spectral and temporal characteristics of the audio, making it suitable for identifying speech patterns associated with depression.
 
