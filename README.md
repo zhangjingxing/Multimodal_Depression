@@ -11,6 +11,15 @@ The raw audio recordings include both the interviewer’s and the participant’
 ## Transcript Preprocessing
 The dataset includes interview scripts documenting interactions between the interviewer and participants. To preprocess this text data, we leverage ChatGPT to identify key linguistic features indicative of depression. ChatGPT generates a list of these features and assigns a score (ranging from 1 to 5) for each participant based on their transcript. These scores are then used as input for training the machine learning model. Here is the prompt we used to make a custom ChatGPT model [Transcript Processing Prompt](https://docs.google.com/document/d/1-fOb1O6eGVn1u-EGGAuLoVHyopnJMHrD4SBmxVuP0bc/edit?usp=sharing) The performance of ChatGPT might differ now since it already released a newer version, so the older version's performance might be slightly different or even getting worse. 
 
+Features used are:
+- **Sentiment Consistency:** Depressed individuals often show persistently negative or muted emotions, indicating emotional instability or suppression.
+- **Emotional Variability:** A lack of emotional highs and lows may signal flat affect, a common trait in depression.
+- **Self-Reflection and Insight:** Excessive introspection often reflects rumination and self-critical thinking, key symptoms of depression.
+- **Social Interaction Indicators:** Reduced engagement or difficulty connecting in conversations suggests social withdrawal.
+- **Repetition and Ruminative Language:** Frequent repetition or focus on negative themes indicates cognitive fixation and distorted thinking.
+- **Energy and Motivation Levels:** Low energy and reduced motivation are reflected in tone, pacing, and action-oriented language.
+- **Response Length and Depth:** Brief or overly verbose responses can indicate diminished engagement or excessive rumination.
+
 ## Facial Feature Preprocessing
 The dataset contains comprehensive facial feature data, including pose, gaze, and Action Units (AUs). For our analysis, we focus specifically on Action Units, which represent facial muscle movements and are intuitive and reliable indicators of emotional states. AUs are particularly effective in detecting emotions such as sadness or lack of expression, both of which are significant in identifying depression. These features are already provided, so we can directly use them to train the model, capturing the non-verbal cues of participants.
 
@@ -41,5 +50,14 @@ Next, we experimented with optimizing weights using various models (e.g., Logist
 
 Ultimately, we adopted a new strategy: testing each participant with all models and detecting depression if any model predicted it. This method emphasizes the collective insights of all models, where a higher number of positive predictions increases the likelihood of detecting depression. This refined strategy better utilizes multimodal data to enhance sensitivity and reliability.
 
+## Dataset Disclaimer!!!
+Our dataset is sourced from the DAIC-WOZ dataset, which is private and cannot be accessed without registration and approval from the DAIC-WOZ organization. Due to privacy and ethical considerations, we have excluded certain portions of the dataset, including:
+
+- Ground truth data for the transcript files (PHQ8)
+- Preprocessed and raw audio data
+- These files are not uploaded to this repository to comply with data usage policies.
+
+### Accessing the Dataset
+If you wish to use the DAIC-WOZ dataset, you must first register and gain approval from the official DAIC-WOZ website: [DCAPS-WOZ Database](https://dcapswoz.ict.usc.edu/)
 
 
