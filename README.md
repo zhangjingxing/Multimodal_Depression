@@ -34,4 +34,12 @@ The data was split into 80% for training and 20% for testing. To improve model p
 
 We tested three machine learning models: Naive Bayes, Random Forest, and SVM. Naive Bayes didn't perform well, especially for depression cases, due to class imbalance and its assumptions about the data. Random Forest performed the best, with a recall of 63% and precision of 88% for detecting depression. It was effective because it handles imbalanced data well and can capture complex patterns. SVM was also tested but didn't perform better than Random Forest.
 
+### Multimodal Ensemble Framework
+To integrate the three models, we initially employed an ensemble method with weighted contributions (4:3:2 for transcript, audio, and facial features, respectively). However, this approach achieved only 69% accuracy, which was lower than the performance of individual models.
+
+Next, we experimented with optimizing weights using various models (e.g., Logistic Regression, Random Forest, SVM, Decision Tree, Gradient Boosting, and KNN). The best result came from KNN, but it achieved only 67% accuracy, which was even lower than the initial approach.
+
+Ultimately, we adopted a new strategy: testing each participant with all models and detecting depression if any model predicted it. This method emphasizes the collective insights of all models, where a higher number of positive predictions increases the likelihood of detecting depression. This refined strategy better utilizes multimodal data to enhance sensitivity and reliability.
+
+
 
