@@ -5,12 +5,10 @@ The dataset used in this project is from the DCAPS-WOZ Database, which contains 
 
 ## Dataset Disclaimer!!!
 Due to consent constraints, the dataset is NOT provided here, and available only to academics and non-profit researchers. Interested parties must complete and sign a request form using an academic email address to gain access through this website: [DCAPS-WOZ Database](https://dcapswoz.ict.usc.edu/). You should expect to receive the permission in several days.
+The original/raw datasets are NOT uploaded to this repository to comply with data usage policies. However, we have processed some parts of the dataset (the transcripts and audio files) to numerical values and can still provide these files here in the 'Dataset' folder, but still comply with the privacy agreement:
 
-We have excluded certain portions of the dataset, including:
-- Ground truth data for the transcript feature file (PHQ8)
-- Preprocessed and raw audio data
-
-These files are not uploaded to this repository to comply with data usage policies.
+We have excluded certain portions of the dataset even after being processed, including:
+- The ground truth column of both datasets, since it contains the PHQ8 result of the participants (the questionnaire which indicates whether participants have depression or not)
 
 ## Audio Preprocessing
 The raw audio recordings include both the interviewer’s and the participant’s voices. To ensure the data focuses solely on the participant, we preprocess the audio by cropping out segments where the interviewer speaks. Once the participant's speech is isolated, we extract acoustic features using techniques such as Mel-Frequency Cepstral Coefficients (MFCC). For more information on how to extract Mel-Frequency Cepstral Coefficients (MFCCs), refer to the [Librosa MFCC documentation](https://librosa.org/doc/latest/generated/librosa.feature.mfcc.html?utm_source=chatgpt.com). MFCC effectively captures the spectral and temporal characteristics of the audio, making it suitable for identifying speech patterns associated with depression.
