@@ -1,5 +1,3 @@
-
-
 # Import libraries
 import librosa
 import librosa.display
