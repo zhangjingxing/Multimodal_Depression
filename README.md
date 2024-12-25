@@ -5,6 +5,7 @@ The dataset used in this project is from the DCAPS-WOZ Database, which contains 
 
 ## Dataset Disclaimer!!!
 Due to consent constraints, the dataset is NOT provided here, and available only to academics and non-profit researchers. Interested parties must complete and sign a request form using an academic email address to gain access through this website: [DCAPS-WOZ Database](https://dcapswoz.ict.usc.edu/). You should expect to receive the permission in several days.
+
 The original/raw datasets are NOT uploaded to this repository to comply with data usage policies. However, we have processed some parts of the dataset (the transcripts and audio files) to numerical values and can still provide these files here in the 'Dataset' folder, but still comply with the privacy agreement:
 
 We have excluded certain portions of the dataset even after being processed, including:
