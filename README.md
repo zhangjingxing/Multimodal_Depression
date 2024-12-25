@@ -3,7 +3,14 @@ A project using CNNs and RNNs to detect depression from multimodal data: speech 
 
 The dataset used in this project is from the DCAPS-WOZ Database, which contains clinical interviews designed to support the diagnosis of psychological distress conditions such as anxiety, depression, and post-traumatic stress disorder (PTSD). The data were collected through Wizard-of-Oz interviews conducted by an animated virtual interviewer, Ellie, controlled by a human interviewer in another room. Includes 189 sessions of interactions ranging between 7-33 minutes (average ~16 minutes). Contains audio and video recordings, transcripts of interactions, and annotations for verbal and non-verbal features.
 
+## Dataset Disclaimer!!!
 Due to consent constraints, the dataset is NOT provided here, and available only to academics and non-profit researchers. Interested parties must complete and sign a request form using an academic email address to gain access through this website: [DCAPS-WOZ Database](https://dcapswoz.ict.usc.edu/). You should expect to receive the permission in several days.
+
+We have excluded certain portions of the dataset, including:
+- Ground truth data for the transcript feature file (PHQ8)
+- Preprocessed and raw audio data
+
+These files are not uploaded to this repository to comply with data usage policies.
 
 ## Audio Preprocessing
 The raw audio recordings include both the interviewer’s and the participant’s voices. To ensure the data focuses solely on the participant, we preprocess the audio by cropping out segments where the interviewer speaks. Once the participant's speech is isolated, we extract acoustic features using techniques such as Mel-Frequency Cepstral Coefficients (MFCC). For more information on how to extract Mel-Frequency Cepstral Coefficients (MFCCs), refer to the [Librosa MFCC documentation](https://librosa.org/doc/latest/generated/librosa.feature.mfcc.html?utm_source=chatgpt.com). MFCC effectively captures the spectral and temporal characteristics of the audio, making it suitable for identifying speech patterns associated with depression.
@@ -49,15 +56,3 @@ To integrate the three models, we initially employed an ensemble method with wei
 Next, we experimented with optimizing weights using various models (e.g., Logistic Regression, Random Forest, SVM, Decision Tree, Gradient Boosting, and KNN). The best result came from KNN, but it achieved only 67% accuracy, which was even lower than the initial approach.
 
 Ultimately, we adopted a new strategy: testing each participant with all models and detecting depression if any model predicted it. This method emphasizes the collective insights of all models, where a higher number of positive predictions increases the likelihood of detecting depression. This refined strategy better utilizes multimodal data to enhance sensitivity and reliability.
-
-## Dataset Disclaimer!!!
-Our dataset is sourced from the DAIC-WOZ dataset, which is private and cannot be accessed without registration and approval from the DAIC-WOZ organization. Due to privacy and ethical considerations, we have excluded certain portions of the dataset, including:
-
-- Ground truth data for the transcript files (PHQ8)
-- Preprocessed and raw audio data
-- These files are not uploaded to this repository to comply with data usage policies.
-
-### Accessing the Dataset
-If you wish to use the DAIC-WOZ dataset, you must first register and gain approval from the official DAIC-WOZ website: [DCAPS-WOZ Database](https://dcapswoz.ict.usc.edu/)
-
-
