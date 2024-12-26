@@ -17,7 +17,7 @@ In addition, we have uploaded our raw dataset contributed by each member to visu
 This repository contains several folders:
 - Dataset: contains the preprocessed transcript and audio dataset (numerical value, without ground truth column)
 - Model Code: audio model, transcript model, emotions model, face model.
-- Models Ensemble code: trial and error, as well as the final models' ensemble code. The trial-and-error version is to find out which ensemble method has the best performance, meanwhile, the final version is the version we finally used.
+- Models Ensemble code: ensembling all the models. There is the trial and error, as well as the final models' ensemble code. The trial-and-error version is to find out which ensemble method has the best performance, meanwhile, the final version is the version we finally used.
 
 More details on each model we implemented and also the ensemble model can be found in the bottom part of this instruction page. 
 
