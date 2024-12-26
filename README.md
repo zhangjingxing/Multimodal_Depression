@@ -11,7 +11,7 @@ The original/raw datasets are NOT uploaded to this repository to comply with dat
 We have excluded certain portions of the dataset even after being processed, including:
 - The ground truth column of both datasets, since it contains the PHQ8 result of the participants (the questionnaire which indicates whether participants have depression or not)
 
-In addition, we have uploaded our own raw dataset contributed by each member to visualize the real dataset and the result after we preprocess it. This dataset can be used for further processing.
+In addition, we have uploaded our raw dataset contributed by each member to visualize the real dataset and the result after we preprocess it. This dataset can be used for further processing, and in this project, we also test the model we built using our dataset (members dataset).
 
 ## Github Repository Folders Guidance
 This repository contains several folders:
