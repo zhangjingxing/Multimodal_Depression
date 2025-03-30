@@ -1,6 +1,8 @@
 # Multimodal_Depression
 A project using CNNs and RNNs to detect depression from multimodal data: speech recordings (acoustic features), transcripts (linguistic analysis), and facial features (action units for non-verbal cues). Integrates diverse data sources for accurate detection of depression and to gain the underlying insights behind mental health issue detection.
 
+The Final Report of this project can be read on: [Multimodal Depression Detection](https://drive.google.com/file/d/1zKrqkoLiP8dzxM9VduKDgiMX2sdFCtzS/view?usp=sharing)
+
 The dataset used in this project is from the DCAPS-WOZ Database, which contains clinical interviews designed to support the diagnosis of psychological distress conditions such as anxiety, depression, and post-traumatic stress disorder (PTSD). The data were collected through Wizard-of-Oz interviews conducted by an animated virtual interviewer, Ellie, controlled by a human interviewer in another room. Includes 189 sessions of interactions ranging between 7-33 minutes (average ~16 minutes). Contains audio and video recordings, transcripts of interactions, and annotations for verbal and non-verbal features.
 
 ## Dataset Disclaimer!!!
